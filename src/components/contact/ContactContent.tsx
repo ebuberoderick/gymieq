@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Mail, MapPin, Phone, Clock, Send, ChevronDown } from "lucide-react";
+import { Mail, MapPin, Phone, Clock, Send } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { ContactFaq } from "@/components/contact/ContactFaq";
 import { BRAND } from "@/lib/constants/brand";
@@ -131,52 +130,8 @@ export function ContactContent() {
         </div>
       </section>
 
-      <FaqSection />
+      <ContactFaq />
     </>
-  );
-}
-
-function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <section className="border-t border-white/5 py-20">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <SectionHeading
-            eyebrow="FAQ"
-            title="Live sessions explained"
-            description="Everything you need to know about joining instructor-led live training on Gymieq."
-          />
-        </FadeIn>
-
-        <div className="mt-10 space-y-3">
-          {LIVE_SESSION_FAQ.map((faq, i) => (
-            <FadeIn key={faq.question} delay={i * 60}>
-              <GlassCard className="overflow-hidden !p-0">
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                  className="flex w-full items-center justify-between p-5 text-left"
-                >
-                  <span className="pr-4 font-medium text-white">{faq.question}</span>
-                  <ChevronDown
-                    className={`h-5 w-5 shrink-0 text-brand-red transition-transform ${
-                      openIndex === i ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {openIndex === i && (
-                  <p className="border-t border-white/5 px-5 pb-5 pt-3 text-sm leading-relaxed text-white/50">
-                    {faq.answer}
-                  </p>
-                )}
-              </GlassCard>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
