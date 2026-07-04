@@ -6,7 +6,7 @@ export const BRAND = {
 
 export const COLORS = {
   primary: "#EF4444",
-  black: "#0D0D0D",
+  black: "#000000",
   gray: "#1F1F1F",
   offWhite: "#F2F2F2",
   white: "#FFFFFF",

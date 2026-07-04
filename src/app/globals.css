@@ -130,6 +130,22 @@ body {
   will-change: transform;
 }
 
+@media (max-width: 767px) {
+  .will-parallax {
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
+.carousel-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
   .animate-float-slow,

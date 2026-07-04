@@ -1,7 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Parallax } from "@/components/motion/Parallax";
-import { ShopHeroArt } from "@/components/graphics/ShopIllustrations";
+import { ShopHeroKits } from "@/components/shop/ShopHeroKits";
 import { GridOverlay } from "@/components/graphics/GridOverlay";
 
 export function ShopHero() {
@@ -10,7 +10,7 @@ export function ShopHero() {
       <GridOverlay className="opacity-[0.03]" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
           <FadeIn>
             <SectionHeading
               eyebrow="Marketplace"
@@ -20,9 +20,11 @@ export function ShopHero() {
             />
           </FadeIn>
 
-          <Parallax speed={0.12} className="hidden justify-center lg:flex">
-            <ShopHeroArt className="h-64 w-64 opacity-70" />
-          </Parallax>
+          <FadeIn delay={100}>
+            <Parallax speed={0.08}>
+              <ShopHeroKits />
+            </Parallax>
+          </FadeIn>
         </div>
       </div>
     </section>

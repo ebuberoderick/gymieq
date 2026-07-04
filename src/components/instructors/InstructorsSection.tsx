@@ -1,11 +1,11 @@
-import Image from "next/image";
-import { Star, Users, User, Check } from "lucide-react";
-import { INSTRUCTORS, SESSION_TYPES } from "@/lib/constants/instructors";
+import { Users, User, Check } from "lucide-react";
+import { SESSION_TYPES } from "@/lib/constants/instructors";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Parallax } from "@/components/motion/Parallax";
+import { InstructorCarousel } from "./InstructorCarousel";
 
 const sessionIcons = { users: Users, user: User };
 
@@ -66,56 +66,7 @@ export function InstructorsSection({ showCta = true }: { showCta?: boolean }) {
           </p>
         </FadeIn>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {INSTRUCTORS.map((instructor, i) => (
-            <FadeIn key={instructor.id} delay={i * 80}>
-              <GlassCard hover className="overflow-hidden !p-0">
-                <div className="relative aspect-square">
-                  <Image
-                    src={instructor.image}
-                    alt={instructor.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/20 to-transparent" />
-                  <div className="absolute bottom-3 left-3 flex gap-1.5">
-                    {instructor.sessionTypes.includes("group") && (
-                      <span className="glass-red rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
-                        GROUP
-                      </span>
-                    )}
-                    {instructor.sessionTypes.includes("private") && (
-                      <span className="glass rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
-                        PRIVATE
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h4 className="font-semibold text-white">{instructor.name}</h4>
-                  <p className="text-xs text-brand-red">{instructor.title}</p>
-                  <p className="mt-2 line-clamp-2 text-xs text-white/50">{instructor.bio}</p>
-                  <div className="mt-3 flex items-center justify-between text-xs text-white/40">
-                    <span className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-brand-red text-brand-red" />
-                      {instructor.rating}
-                    </span>
-                    <span>{instructor.students.toLocaleString()} students</span>
-                  </div>
-                </div>
-              </GlassCard>
-            </FadeIn>
-          ))}
-        </div>
-
-        {showCta && (
-          <FadeIn>
-            <div className="mt-12 text-center">
-              <Button href="/about#instructors">View All Instructors</Button>
-            </div>
-          </FadeIn>
-        )}
+        <InstructorCarousel />
       </div>
     </section>
   );
