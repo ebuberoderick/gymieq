@@ -3,6 +3,7 @@ import { Sora } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBackdrop } from "@/components/graphics/PageBackdrop";
+import { Providers } from "@/components/providers/Providers";
 import { BRAND } from "@/lib/constants/brand";
 import "./globals.css";
 
@@ -26,10 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sora.variable} h-full antialiased`}>
       <body className="relative flex min-h-full flex-col bg-brand-black text-white">
-        <PageBackdrop />
-        <Header />
-        <main className="relative flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <PageBackdrop />
+          <Header />
+          <main className="relative flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

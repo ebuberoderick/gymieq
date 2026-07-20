@@ -1,14 +1,33 @@
+"use client";
+
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
+import { useState } from "react";
 import type { Product } from "@/lib/constants/products";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { addItem } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAdd = () => {
+    addItem({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+    });
+    setJustAdded(true);
+    window.setTimeout(() => setJustAdded(false), 1200);
+  };
+
   return (
     <GlassCard as="article" hover className="group flex flex-col overflow-hidden !p-0">
       <div className="relative aspect-square overflow-hidden">
@@ -40,9 +59,22 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="text-xl font-bold text-white">
             ${product.price.toFixed(2)}
           </span>
-          <Button className="!rounded-xl !px-4 !py-2 text-xs" variant="glass">
-            <ShoppingCart className="h-3.5 w-3.5" />
-            Add to Cart
+          <Button
+            className="!rounded-xl !px-4 !py-2 text-xs"
+            variant="glass"
+            onClick={handleAdd}
+          >
+            {justAdded ? (
+              <>
+                <Check className="h-3.5 w-3.5" />
+                Added
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-3.5 w-3.5" />
+                Add to Cart
+              </>
+            )}
           </Button>
         </div>
       </div>
