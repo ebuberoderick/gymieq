@@ -1,4 +1,5 @@
 import type { CartItem, CheckoutDetails, Order } from "@/lib/cart/types";
+import type { AppliedPromo } from "@/lib/cart/promos";
 import { calcTotal } from "@/lib/cart/totals";
 
 const ORDER_KEY = "gymieq-last-order";
@@ -9,16 +10,22 @@ function createOrderId(): string {
   return `GQ-${stamp}-${rand}`;
 }
 
-export function placeOrder(items: CartItem[], details: CheckoutDetails): Order {
-  const { subtotal, shipping, tax, total } = calcTotal(items);
+export function placeOrder(
+  items: CartItem[],
+  details: CheckoutDetails,
+  promo: AppliedPromo | null = null,
+): Order {
+  const { subtotal, discount, shipping, tax, total } = calcTotal(items, promo);
   const order: Order = {
     id: createOrderId(),
     items: items.map((item) => ({ ...item })),
     details,
     subtotal,
+    discount,
     shipping,
     tax,
     total,
+    promoCode: promo?.code ?? null,
     createdAt: new Date().toISOString(),
   };
 

@@ -9,6 +9,7 @@ import type { CheckoutDetails } from "@/lib/cart/types";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { CartSummary } from "@/components/cart/CartSummary";
+import { PromoCodeField } from "@/components/checkout/PromoCodeField";
 import { formatMoney } from "@/lib/cart/totals";
 
 const inputClass =
@@ -16,7 +17,15 @@ const inputClass =
 
 export function CheckoutForm() {
   const router = useRouter();
-  const { items, subtotal, shipping, tax, total } = useCart();
+  const {
+    items,
+    subtotal,
+    discount,
+    shipping,
+    tax,
+    total,
+    promo,
+  } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -43,7 +52,7 @@ export function CheckoutForm() {
     };
 
     setSubmitting(true);
-    placeOrder(items, details);
+    placeOrder(items, details, promo);
     router.push("/checkout/success");
   };
 
@@ -72,27 +81,6 @@ export function CheckoutForm() {
             <Field label="Country" name="country" defaultValue="United States" required />
           </div>
         </GlassCard>
-
-        <GlassCard variant="strong" className="space-y-5 p-6 sm:p-8">
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-brand-red" />
-            <h2 className="text-lg font-bold text-white">Payment</h2>
-          </div>
-          <p className="text-xs text-white/40">
-            Demo checkout — no real charge. Card details are not stored.
-          </p>
-          <Field label="Name on card" name="cardName" required />
-          <Field
-            label="Card number"
-            name="cardNumber"
-            placeholder="4242 4242 4242 4242"
-            required
-          />
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Expiry" name="expiry" placeholder="MM/YY" required />
-            <Field label="CVC" name="cvc" placeholder="123" required />
-          </div>
-        </GlassCard>
       </div>
 
       <div className="lg:col-span-2">
@@ -111,11 +99,14 @@ export function CheckoutForm() {
               </li>
             ))}
           </ul>
+          <PromoCodeField />
           <CartSummary
             subtotal={subtotal}
+            discount={discount}
             shipping={shipping}
             tax={tax}
             total={total}
+            promoCode={promo?.code}
           />
           {error && <p className="text-sm text-brand-red">{error}</p>}
           <Button type="submit" className="w-full" disabled={submitting}>

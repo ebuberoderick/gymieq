@@ -11,7 +11,8 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function CartPageContent() {
-  const { items, subtotal, shipping, tax, total, clearCart } = useCart();
+  const { items, subtotal, discount, shipping, tax, total, promo, clearCart } =
+    useCart();
 
   if (items.length === 0) {
     return (
@@ -58,9 +59,11 @@ export function CartPageContent() {
               <h2 className="text-lg font-bold text-white">Order summary</h2>
               <CartSummary
                 subtotal={subtotal}
+                discount={discount}
                 shipping={shipping}
                 tax={tax}
                 total={total}
+                promoCode={promo?.code}
               />
               <Button href="/checkout" className="w-full">
                 Proceed to Checkout

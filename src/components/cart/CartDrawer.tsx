@@ -13,9 +13,11 @@ export function CartDrawer() {
     isOpen,
     closeCart,
     subtotal,
+    discount,
     shipping,
     tax,
     total,
+    promo,
     itemCount,
   } = useCart();
 
@@ -60,9 +62,11 @@ export function CartDrawer() {
             <div className="space-y-4 border-t border-white/10 px-5 py-5">
               <CartSummary
                 subtotal={subtotal}
+                discount={discount}
                 shipping={shipping}
                 tax={tax}
                 total={total}
+                promoCode={promo?.code}
               />
               <Button href="/cart" onClick={closeCart} variant="secondary" className="w-full">
                 View Cart

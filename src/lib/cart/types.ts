@@ -1,3 +1,5 @@
+import type { AppliedPromo } from "@/lib/cart/promos";
+
 export interface CartItem {
   productId: string;
   name: string;
@@ -24,9 +26,11 @@ export interface Order {
   items: CartItem[];
   details: CheckoutDetails;
   subtotal: number;
+  discount: number;
   shipping: number;
   tax: number;
   total: number;
+  promoCode: string | null;
   createdAt: string;
 }
 
@@ -34,9 +38,11 @@ export interface CartContextValue {
   items: CartItem[];
   itemCount: number;
   subtotal: number;
+  discount: number;
   shipping: number;
   tax: number;
   total: number;
+  promo: AppliedPromo | null;
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -44,4 +50,6 @@ export interface CartContextValue {
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  applyPromo: (code: string) => { ok: true } | { ok: false; error: string };
+  removePromo: () => void;
 }

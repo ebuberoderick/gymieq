@@ -76,6 +76,20 @@ export function OrderConfirmation() {
 
             <div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm">
               <SummaryRow label="Subtotal" value={formatMoney(order.subtotal)} />
+              {(order.discount ?? 0) > 0 && (
+                <SummaryRow
+                  label={
+                    order.promoCode
+                      ? `Discount (${order.promoCode})`
+                      : "Discount"
+                  }
+                  value={`−${formatMoney(order.discount)}`}
+                  accent
+                />
+              )}
+              {order.promoCode && (order.discount ?? 0) === 0 && (
+                <SummaryRow label="Promo" value={order.promoCode} accent />
+              )}
               <SummaryRow
                 label="Shipping"
                 value={order.shipping === 0 ? "Free" : formatMoney(order.shipping)}
@@ -117,11 +131,23 @@ export function OrderConfirmation() {
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryRow({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string;
+  value: string;
+  accent?: boolean;
+}) {
   return (
-    <div className="flex justify-between text-white/60">
+    <div
+      className={`flex justify-between ${accent ? "text-brand-red" : "text-white/60"}`}
+    >
       <span>{label}</span>
-      <span className="text-white">{value}</span>
+      <span className={accent ? "font-medium text-brand-red" : "text-white"}>
+        {value}
+      </span>
     </div>
   );
 }

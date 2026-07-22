@@ -9,18 +9,23 @@ import {
   type ReactNode,
 } from "react";
 import type { CartContextValue, CartItem } from "@/lib/cart/types";
+import type { AppliedPromo } from "@/lib/cart/promos";
+import { validatePromo } from "@/lib/cart/promos";
 import { readCart, writeCart } from "@/lib/cart/storage";
-import { calcTotal } from "@/lib/cart/totals";
+import { readPromo, writePromo } from "@/lib/cart/promo-storage";
+import { calcSubtotal, calcTotal } from "@/lib/cart/totals";
 
 export const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setItems(readCart());
+    setPromo(readPromo());
     setHydrated(true);
   }, []);
 
@@ -28,6 +33,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     writeCart(items);
   }, [items, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writePromo(promo);
+  }, [promo, hydrated]);
+
+  useEffect(() => {
+    if (!promo) return;
+    const result = validatePromo(promo.code, calcSubtotal(items));
+    if (!result.ok) setPromo(null);
+  }, [items, promo]);
 
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
@@ -64,14 +80,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setPromo(null);
+  }, []);
 
-  const totals = useMemo(() => calcTotal(items), [items]);
+  const applyPromo = useCallback(
+    (code: string) => {
+      const result = validatePromo(code, calcSubtotal(items));
+      if (!result.ok) return result;
+      setPromo(result.promo);
+      return { ok: true as const };
+    },
+    [items],
+  );
+
+  const removePromo = useCallback(() => setPromo(null), []);
+
+  const totals = useMemo(() => calcTotal(items, promo), [items, promo]);
 
   const value = useMemo<CartContextValue>(
     () => ({
       items,
       ...totals,
+      promo,
       isOpen,
       openCart,
       closeCart,
@@ -79,10 +111,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       updateQuantity,
       clearCart,
+      applyPromo,
+      removePromo,
     }),
     [
       items,
       totals,
+      promo,
       isOpen,
       openCart,
       closeCart,
@@ -90,6 +125,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       updateQuantity,
       clearCart,
+      applyPromo,
+      removePromo,
     ],
   );
 
