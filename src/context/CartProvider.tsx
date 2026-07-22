@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import type { CartContextValue, CartItem } from "@/lib/cart/types";
@@ -14,20 +15,53 @@ import { validatePromo } from "@/lib/cart/promos";
 import { readCart, writeCart } from "@/lib/cart/storage";
 import { readPromo, writePromo } from "@/lib/cart/promo-storage";
 import { calcSubtotal, calcTotal } from "@/lib/cart/totals";
+import { getProductStock } from "@/lib/constants/products";
 
 export const CartContext = createContext<CartContextValue | null>(null);
 
+const emptySubscribe = () => () => {};
+
+function clampQuantity(quantity: number, stock: number): number {
+  return Math.max(0, Math.min(quantity, Math.max(0, stock)));
+}
+
+function withStock(item: CartItem): CartItem {
+  const stock = item.stock > 0 ? item.stock : getProductStock(item.productId);
+  return {
+    ...item,
+    stock,
+    quantity: clampQuantity(item.quantity, stock),
+  };
+}
+
+function loadStoredCart(): CartItem[] {
+  return readCart()
+    .map(withStock)
+    .filter((item) => item.quantity > 0);
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+
   const [items, setItems] = useState<CartItem[]>([]);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setItems(readCart());
-    setPromo(readPromo());
+  if (isClient && !hydrated) {
     setHydrated(true);
-  }, []);
+    setItems(loadStoredCart());
+    setPromo(readPromo());
+  }
+
+  if (promo) {
+    const result = validatePromo(promo.code, calcSubtotal(items));
+    if (!result.ok) setPromo(null);
+  }
 
   useEffect(() => {
     if (!hydrated) return;
@@ -39,29 +73,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     writePromo(promo);
   }, [promo, hydrated]);
 
-  useEffect(() => {
-    if (!promo) return;
-    const result = validatePromo(promo.code, calcSubtotal(items));
-    if (!result.ok) setPromo(null);
-  }, [items, promo]);
-
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
   const addItem = useCallback(
     (item: Omit<CartItem, "quantity">, quantity = 1) => {
+      const stock =
+        item.stock > 0 ? item.stock : getProductStock(item.productId);
+      if (stock < 1) return;
+
       setItems((prev) => {
         const existing = prev.find((i) => i.productId === item.productId);
         if (existing) {
+          const nextQty = clampQuantity(existing.quantity + quantity, stock);
+          if (nextQty < 1) {
+            return prev.filter((i) => i.productId !== item.productId);
+          }
           return prev.map((i) =>
             i.productId === item.productId
-              ? { ...i, quantity: i.quantity + quantity }
+              ? { ...i, stock, quantity: nextQty }
               : i,
           );
         }
-        return [...prev, { ...item, quantity }];
+
+        const nextQty = clampQuantity(quantity, stock);
+        if (nextQty < 1) return prev;
+        return [...prev, { ...item, stock, quantity: nextQty }];
       });
-      setIsOpen(true);
     },
     [],
   );
@@ -71,13 +109,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity < 1) {
-      setItems((prev) => prev.filter((i) => i.productId !== productId));
-      return;
-    }
-    setItems((prev) =>
-      prev.map((i) => (i.productId === productId ? { ...i, quantity } : i)),
-    );
+    setItems((prev) => {
+      const current = prev.find((i) => i.productId === productId);
+      if (!current) return prev;
+
+      const stock =
+        current.stock > 0 ? current.stock : getProductStock(productId);
+      const nextQty = clampQuantity(quantity, stock);
+
+      if (nextQty < 1) {
+        return prev.filter((i) => i.productId !== productId);
+      }
+
+      return prev.map((i) =>
+        i.productId === productId ? { ...i, stock, quantity: nextQty } : i,
+      );
+    });
   }, []);
 
   const clearCart = useCallback(() => {

@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import type { CartItem } from "@/lib/cart/types";
 import { formatMoney } from "@/lib/cart/totals";
 import { useCart } from "@/hooks/useCart";
+import { QuantityStepper } from "@/components/cart/QuantityStepper";
+import { getProductStock } from "@/lib/constants/products";
 
 interface CartItemRowProps {
   item: CartItem;
@@ -13,6 +15,8 @@ interface CartItemRowProps {
 
 export function CartItemRow({ item, compact = false }: CartItemRowProps) {
   const { updateQuantity, removeItem } = useCart();
+  const maxStock =
+    item.stock > 0 ? item.stock : getProductStock(item.productId);
 
   return (
     <div className={`flex gap-3 ${compact ? "py-3" : "gap-4 py-4"}`}>
@@ -30,7 +34,10 @@ export function CartItemRow({ item, compact = false }: CartItemRowProps) {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">{item.name}</p>
-            <p className="text-xs text-white/40">{item.category}</p>
+            <p className="text-xs text-white/40">
+              {item.category}
+              {item.quantity >= maxStock ? " · max stock" : ""}
+            </p>
           </div>
           <p className="shrink-0 text-sm font-bold text-white">
             {formatMoney(item.price * item.quantity)}
@@ -38,27 +45,13 @@ export function CartItemRow({ item, compact = false }: CartItemRowProps) {
         </div>
 
         <div className="mt-auto flex items-center justify-between pt-2">
-          <div className="glass flex items-center rounded-full">
-            <button
-              type="button"
-              aria-label="Decrease quantity"
-              onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-              className="flex h-8 w-8 items-center justify-center text-white/70 hover:text-white"
-            >
-              <Minus className="h-3.5 w-3.5" />
-            </button>
-            <span className="w-6 text-center text-sm font-medium text-white">
-              {item.quantity}
-            </span>
-            <button
-              type="button"
-              aria-label="Increase quantity"
-              onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-              className="flex h-8 w-8 items-center justify-center text-white/70 hover:text-white"
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </button>
-          </div>
+          <QuantityStepper
+            quantity={item.quantity}
+            max={maxStock}
+            size="sm"
+            onDecrease={() => updateQuantity(item.productId, item.quantity - 1)}
+            onIncrease={() => updateQuantity(item.productId, item.quantity + 1)}
+          />
 
           <button
             type="button"
