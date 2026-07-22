@@ -7,6 +7,7 @@ import type { Product } from "@/lib/constants/products";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/hooks/useCart";
+import { formatMoney } from "@/lib/cart/totals";
 
 interface ProductCardProps {
   product: Product;
@@ -57,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <div className="mt-4 flex items-center justify-between">
           <span className="text-xl font-bold text-white">
-            ${product.price.toFixed(2)}
+            {formatMoney(product.price)}
           </span>
           <Button
             className="!rounded-xl !px-4 !py-2 text-xs"

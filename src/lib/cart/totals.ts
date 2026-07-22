@@ -2,7 +2,9 @@ import type { CartItem } from "@/lib/cart/types";
 import type { AppliedPromo } from "@/lib/cart/promos";
 import { calcDiscount } from "@/lib/cart/promos";
 
-const FREE_SHIPPING_THRESHOLD = 100;
+export { formatMoney, CURRENCY_CODE } from "@/lib/cart/currency";
+
+export const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING = 9.99;
 const TAX_RATE = 0.08;
 
@@ -49,8 +51,4 @@ export function calcTotal(
     total: taxable + shipping + tax,
     itemCount,
   };
-}
-
-export function formatMoney(amount: number): string {
-  return `$${amount.toFixed(2)}`;
 }

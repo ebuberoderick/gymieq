@@ -45,7 +45,7 @@ export function CheckoutForm() {
       city: String(form.get("city") ?? ""),
       state: String(form.get("state") ?? ""),
       zip: String(form.get("zip") ?? ""),
-      country: String(form.get("country") ?? "United States"),
+      country: String(form.get("country") ?? "Nigeria"),
     };
 
     setSubmitting(true);

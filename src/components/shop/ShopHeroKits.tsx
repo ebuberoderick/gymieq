@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { PRODUCTS } from "@/lib/constants/products";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { formatMoney } from "@/lib/cart/totals";
 
 const HERO_KIT_IDS = ["1", "2", "3", "6"];
 
@@ -46,7 +47,7 @@ export function ShopHeroKits() {
               {kit.name}
             </p>
             <p className="mt-0.5 text-xs font-bold text-brand-red">
-              ${kit.price.toFixed(2)}
+              {formatMoney(kit.price)}
             </p>
           </div>
         </GlassCard>

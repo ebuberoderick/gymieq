@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { CartItem } from "@/lib/cart/types";
 import { validatePromo } from "@/lib/cart/promos";
-import { calcSubtotal, calcTotal } from "@/lib/cart/totals";
+import { calcSubtotal, calcTotal, formatMoney } from "@/lib/cart/totals";
 import { initializeTransaction } from "@/lib/paystack/server";
 
 interface InitBody {
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
           {
             display_name: "Cart Total",
             variable_name: "cart_total",
-            value: total.toFixed(2),
+            value: formatMoney(total),
           },
         ],
       },

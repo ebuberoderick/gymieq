@@ -1,4 +1,4 @@
-import { formatMoney } from "@/lib/cart/totals";
+import { formatMoney, FREE_SHIPPING_THRESHOLD } from "@/lib/cart/totals";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -36,9 +36,9 @@ export function CartSummary({
         <span className="font-semibold text-white">Total</span>
         <span className="text-lg font-bold text-white">{formatMoney(total)}</span>
       </div>
-      {subtotal > 0 && subtotal < 100 && shipping > 0 && (
+      {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && shipping > 0 && (
         <p className="pt-1 text-xs text-white/40">
-          Free shipping on orders over $100
+          Free shipping on orders over {formatMoney(FREE_SHIPPING_THRESHOLD)}
         </p>
       )}
     </div>

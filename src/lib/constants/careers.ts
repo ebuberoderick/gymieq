@@ -34,7 +34,7 @@ export const BENEFITS = [
   { title: "Remote-First", description: "Work from anywhere with a global, async-friendly team." },
   { title: "Free Gymieq Premium", description: "Join any instructor's live group or private session — on us." },
   { title: "Health & Wellness", description: "Comprehensive health coverage and annual wellness stipend." },
-  { title: "Learning Budget", description: "$2,000/year for courses, certifications, and conferences." },
+  { title: "Learning Budget", description: "₦2,000,000/year for courses, certifications, and conferences." },
   { title: "Equity Package", description: "Share in the growth of a fast-scaling fitness platform." },
   { title: "Flexible PTO", description: "Take the time you need to recharge and perform at your best." },
 ] as const;

@@ -1,3 +1,5 @@
+import { formatMoney } from "@/lib/cart/currency";
+
 export type PromoType = "percent" | "fixed" | "shipping";
 
 export interface PromoDefinition {
@@ -33,7 +35,7 @@ export const PROMO_CODES: PromoDefinition[] = [
     code: "WELCOME15",
     type: "fixed",
     value: 15,
-    description: "$15 off your order",
+    description: `${formatMoney(15)} off your order`,
   },
   {
     code: "FREESHIP",
@@ -65,7 +67,7 @@ export function validatePromo(code: string, subtotal: number): PromoResult {
   if (match.minSubtotal && subtotal < match.minSubtotal) {
     return {
       ok: false,
-      error: `Requires a subtotal of $${match.minSubtotal.toFixed(2)} or more.`,
+      error: `Requires a subtotal of ${formatMoney(match.minSubtotal)} or more.`,
     };
   }
 

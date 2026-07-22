@@ -7,7 +7,7 @@ export function getPaystackSecretKey(): string {
 }
 
 export function getPaystackCurrency(): string {
-  return process.env.PAYSTACK_CURRENCY?.toUpperCase() || "NGN";
+  return "NGN";
 }
 
 /** Convert major-unit total (e.g. 89.99) to Paystack subunit (kobo/cents). */
