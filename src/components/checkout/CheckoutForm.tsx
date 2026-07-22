@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, Lock } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { placeOrder } from "@/lib/cart/orders";
 import type { CheckoutDetails } from "@/lib/cart/types";
@@ -17,15 +17,7 @@ const inputClass =
 
 export function CheckoutForm() {
   const router = useRouter();
-  const {
-    items,
-    subtotal,
-    discount,
-    shipping,
-    tax,
-    total,
-    promo,
-  } = useCart();
+  const { items, subtotal, discount, shipping, tax, total, promo } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -78,7 +70,12 @@ export function CheckoutForm() {
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="ZIP code" name="zip" required />
-            <Field label="Country" name="country" defaultValue="United States" required />
+            <Field
+              label="Country"
+              name="country"
+              defaultValue="United States"
+              required
+            />
           </div>
         </GlassCard>
       </div>
@@ -110,7 +107,7 @@ export function CheckoutForm() {
           />
           {error && <p className="text-sm text-brand-red">{error}</p>}
           <Button type="submit" className="w-full" disabled={submitting}>
-            <Lock className="h-4 w-4" />
+            <CreditCard className="h-4 w-4" />
             {submitting ? "Placing order…" : `Pay ${formatMoney(total)}`}
           </Button>
         </GlassCard>
