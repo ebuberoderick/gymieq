@@ -98,6 +98,12 @@ export function OrderConfirmation() {
                 <span>Total</span>
                 <span>{formatMoney(order.total)}</span>
               </div>
+              {order.paymentReference && (
+                <SummaryRow
+                  label="Paystack ref"
+                  value={order.paymentReference}
+                />
+              )}
             </div>
 
             <div className="mt-6 flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-left">

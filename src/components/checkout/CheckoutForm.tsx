@@ -6,6 +6,11 @@ import { CreditCard } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { placeOrder } from "@/lib/cart/orders";
 import type { CheckoutDetails } from "@/lib/cart/types";
+import {
+  initializePaystackPayment,
+  openPaystackCheckout,
+  verifyPaystackPayment,
+} from "@/lib/paystack/checkout-client";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { CartSummary } from "@/components/cart/CartSummary";
@@ -21,7 +26,7 @@ export function CheckoutForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -44,8 +49,44 @@ export function CheckoutForm() {
     };
 
     setSubmitting(true);
-    placeOrder(items, details, promo);
-    router.push("/checkout/success");
+
+    try {
+      const { accessCode } = await initializePaystackPayment({
+        email: details.email,
+        items,
+        promoCode: promo?.code ?? null,
+      });
+
+      await openPaystackCheckout(accessCode, {
+        onSuccess: async (reference) => {
+          try {
+            await verifyPaystackPayment(reference);
+            placeOrder(items, details, promo, { reference });
+            router.push("/checkout/success");
+          } catch (err) {
+            setError(
+              err instanceof Error
+                ? err.message
+                : "Payment could not be verified.",
+            );
+            setSubmitting(false);
+          }
+        },
+        onCancel: () => {
+          setError("Payment was cancelled.");
+          setSubmitting(false);
+        },
+        onError: (message) => {
+          setError(message || "Payment failed to load.");
+          setSubmitting(false);
+        },
+      });
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Unable to start Paystack payment.",
+      );
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -73,7 +114,7 @@ export function CheckoutForm() {
             <Field
               label="Country"
               name="country"
-              defaultValue="United States"
+              defaultValue="Nigeria"
               required
             />
           </div>
@@ -108,8 +149,11 @@ export function CheckoutForm() {
           {error && <p className="text-sm text-brand-red">{error}</p>}
           <Button type="submit" className="w-full" disabled={submitting}>
             <CreditCard className="h-4 w-4" />
-            {submitting ? "Placing order…" : `Pay ${formatMoney(total)}`}
+            {submitting ? "Waiting for Paystack…" : `Pay ${formatMoney(total)}`}
           </Button>
+          <p className="text-center text-xs text-white/40">
+            Secured by Paystack — card, bank, USSD &amp; more
+          </p>
         </GlassCard>
       </div>
     </form>

@@ -31,6 +31,8 @@ export interface Order {
   tax: number;
   total: number;
   promoCode: string | null;
+  paymentReference: string | null;
+  paymentProvider: "paystack" | null;
   createdAt: string;
 }
 

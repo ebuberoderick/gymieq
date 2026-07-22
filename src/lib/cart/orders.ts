@@ -15,6 +15,7 @@ export function placeOrder(
   items: CartItem[],
   details: CheckoutDetails,
   promo: AppliedPromo | null = null,
+  payment?: { reference: string },
 ): Order {
   const { subtotal, discount, shipping, tax, total } = calcTotal(items, promo);
   const order: Order = {
@@ -27,6 +28,8 @@ export function placeOrder(
     tax,
     total,
     promoCode: promo?.code ?? null,
+    paymentReference: payment?.reference ?? null,
+    paymentProvider: payment?.reference ? "paystack" : null,
     createdAt: new Date().toISOString(),
   };
 
