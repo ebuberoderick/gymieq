@@ -20,6 +20,7 @@ const footerLinks = [
       { label: "Apparel", href: "/marketplace?category=Apparel" },
       { label: "Equipment", href: "/marketplace?category=Equipment" },
       { label: "Bundles", href: "/marketplace?category=Bundles" },
+      { label: "Track Order", href: "/track" },
     ],
   },
   {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { CheckCircle2, Package } from "lucide-react";
 import { readLastOrder } from "@/lib/cart/orders";
 import type { Order } from "@/lib/cart/types";
@@ -116,13 +115,12 @@ export function OrderConfirmation() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <Button href="/marketplace">Continue shopping</Button>
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white/60 hover:text-white"
-              >
-                Back to home
-              </Link>
+              <Button href={`/track?id=${encodeURIComponent(order.id)}`}>
+                Track order
+              </Button>
+              <Button href="/marketplace" variant="secondary">
+                Continue shopping
+              </Button>
             </div>
           </GlassCard>
         </FadeIn>

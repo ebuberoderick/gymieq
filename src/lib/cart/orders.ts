@@ -1,6 +1,7 @@
 import type { CartItem, CheckoutDetails, Order } from "@/lib/cart/types";
 import type { AppliedPromo } from "@/lib/cart/promos";
 import { calcTotal } from "@/lib/cart/totals";
+import { saveOrder } from "@/lib/cart/order-store";
 
 const ORDER_KEY = "gymieq-last-order";
 
@@ -31,6 +32,7 @@ export function placeOrder(
 
   if (typeof window !== "undefined") {
     sessionStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    saveOrder(order);
   }
 
   return order;
