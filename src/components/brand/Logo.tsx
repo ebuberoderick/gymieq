@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { BRAND } from "@/lib/constants/brand";
 
@@ -6,49 +7,49 @@ interface LogoProps {
   showTagline?: boolean;
 }
 
+/** Native wordmark is 488×144 (~3.39:1). */
+const ASPECT = 488 / 144;
+
 const sizes = {
-  sm: { mark: 28, text: "text-lg" },
-  md: { mark: 36, text: "text-xl" },
-  lg: { mark: 48, text: "text-3xl" },
-};
+  sm: 28,
+  md: 36,
+  lg: 48,
+} as const;
 
 export function Logo({ size = "md", showTagline = false }: LogoProps) {
-  const { mark, text } = sizes[size];
+  const height = sizes[size];
+  const width = Math.round(height * ASPECT);
 
   return (
-    <Link href="/" className="group flex items-center gap-3">
-      <svg
-        width={mark}
-        height={mark}
-        viewBox="0 0 48 48"
-        fill="none"
-        aria-hidden
-        className="shrink-0"
-      >
-        <path
-          d="M24 4C12.954 4 4 12.954 4 24s8.954 20 20 20c5.5 0 10.5-2.2 14.1-5.8"
-          stroke="white"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M24 4c8 0 14 6 14 14v10l8 4"
-          stroke="#EF4444"
-          strokeWidth="4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <div className="flex flex-col">
-        <span className={`${text} font-bold tracking-tight`}>
-          <span className="text-white">Gymi</span>
-          <span className="text-brand-red">eq</span>
-        </span>
-        {showTagline && (
-          <span className="text-[10px] font-semibold tracking-[0.2em] text-brand-red uppercase">
-            {BRAND.tagline}
-          </span>
-        )}
+    <Link href="/" className="group flex flex-col items-start gap-1">
+      <div className="flex items-center gap-2">
+        <div className="">
+          <Image
+            src="/images/logo-light.png"
+            alt={BRAND.name}
+            width={width}
+            height={height}
+            priority
+            className="object-contain object-left transition-opacity group-hover:opacity-90"
+            style={{ height: height * 2, width: "auto" }}
+          />
+        </div>
+        <div className="relative right-4">
+          <Image
+            src="/images/gymicq.png"
+            alt={BRAND.name}
+            width={width}
+            height={height}
+            priority
+            className="object-contain object-left transition-opacity group-hover:opacity-90"
+            style={{ height, width: "auto" }}
+          />
+          {showTagline && (
+            <span className="text-[10px] font-semibold relative bottom-2 left-1 tracking-[0.2em] text-brand-red uppercase">
+              {BRAND.tagline}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
