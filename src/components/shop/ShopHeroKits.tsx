@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PRODUCTS } from "@/lib/constants/products";
+import { PRODUCTS, getPrimaryImage } from "@/lib/constants/products";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { formatMoney } from "@/lib/cart/totals";
 
@@ -28,7 +28,7 @@ export function ShopHeroKits() {
           }`}
         >
           <Image
-            src={kit.image}
+            src={getPrimaryImage(kit)}
             alt={kit.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

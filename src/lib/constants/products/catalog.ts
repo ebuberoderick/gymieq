@@ -10,7 +10,11 @@ export const PRODUCTS: Product[] = [
     category: "Accessories",
     stock: 0,
     badge: "Best Seller",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
+      "https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=600&q=80",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
+    ],
     variantAxes: [
       { kind: "color", label: "Color", options: ["Black", "Charcoal", "Red"] },
       { kind: "size", label: "Size", options: ["30L", "45L", "60L"] },
@@ -35,7 +39,11 @@ export const PRODUCTS: Product[] = [
     price: 34.99,
     category: "Apparel",
     stock: 0,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&q=80",
+      "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=80",
+    ],
     variantAxes: [
       { kind: "color", label: "Color", options: ["Black", "White", "Red"] },
       { kind: "size", label: "Size", options: ["S", "M", "L", "XL"] },
@@ -63,7 +71,9 @@ export const PRODUCTS: Product[] = [
     price: 24.99,
     category: "Accessories",
     stock: 40,
-    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
+    ],
   },
   {
     id: "7",
@@ -73,7 +83,10 @@ export const PRODUCTS: Product[] = [
     price: 32.99,
     category: "Accessories",
     stock: 0,
-    image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=600&q=80",
+      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
+    ],
     variantAxes: [
       { kind: "color", label: "Color", options: ["Black", "Steel"] },
       { kind: "size", label: "Capacity", options: ["24oz", "32oz", "40oz"] },
@@ -96,7 +109,10 @@ export const PRODUCTS: Product[] = [
     category: "Equipment",
     stock: 0,
     badge: "New",
-    image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=600&q=80",
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80",
+    ],
     variantAxes: [
       {
         kind: "weight",
@@ -119,7 +135,11 @@ export const PRODUCTS: Product[] = [
     price: 54.99,
     category: "Apparel",
     stock: 0,
-    image: "https://images.unsplash.com/photo-1506629082955-511b67f8548e?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1506629082955-511b67f8548e?w=600&q=80",
+      "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=600&q=80",
+      "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=600&q=80",
+    ],
     variantAxes: [
       { kind: "color", label: "Color", options: ["Black", "Navy"] },
       { kind: "size", label: "Size", options: ["XS", "S", "M", "L"] },
@@ -147,7 +167,11 @@ export const PRODUCTS: Product[] = [
     category: "Bundles",
     stock: 6,
     badge: "Save 20%",
-    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80",
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+    ],
   },
 ];
 

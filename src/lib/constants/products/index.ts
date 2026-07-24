@@ -18,6 +18,7 @@ export {
   hasVariants,
   isOptionAvailable,
 } from "./variants";
+export { getPrimaryImage, getProductImages } from "./images";
 
 import { PRODUCTS } from "./catalog";
 import type { Product, SelectedVariants } from "./types";

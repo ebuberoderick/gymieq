@@ -24,7 +24,8 @@ export interface Product {
   /** Used when the product has no variant axes. */
   stock: number;
   badge?: string;
-  image: string;
+  /** One or more gallery images; first is the primary/cover. */
+  images: string[];
   variantAxes?: VariantAxis[];
   skus?: ProductSku[];
 }
