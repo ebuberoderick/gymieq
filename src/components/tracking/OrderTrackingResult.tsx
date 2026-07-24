@@ -76,7 +76,7 @@ export function OrderTrackingResult({ order }: OrderTrackingResultProps) {
           </div>
           <ul className="space-y-4">
             {order.items.map((item) => (
-              <li key={item.productId} className="flex gap-3">
+              <li key={item.lineId ?? item.productId} className="flex gap-3">
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
                   <Image
                     src={item.image}
@@ -90,7 +90,10 @@ export function OrderTrackingResult({ order }: OrderTrackingResultProps) {
                   <p className="truncate text-sm font-medium text-white">
                     {item.name}
                   </p>
-                  <p className="text-xs text-white/40">Qty {item.quantity}</p>
+                  <p className="text-xs text-white/40">
+                    {item.variantLabel ? `${item.variantLabel} · ` : ""}
+                    Qty {item.quantity}
+                  </p>
                 </div>
                 <p className="text-sm text-white/60">
                   {formatMoney(item.price * item.quantity)}

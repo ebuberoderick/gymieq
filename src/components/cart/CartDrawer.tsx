@@ -54,7 +54,7 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-5">
               <div className="divide-y divide-white/5">
                 {items.map((item) => (
-                  <CartItemRow key={item.productId} item={item} compact />
+                  <CartItemRow key={item.lineId} item={item} compact />
                 ))}
               </div>
             </div>

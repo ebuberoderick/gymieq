@@ -1,6 +1,8 @@
 import type { AppliedPromo } from "@/lib/cart/promos";
+import type { SelectedVariants } from "@/lib/constants/products";
 
 export interface CartItem {
+  lineId: string;
   productId: string;
   name: string;
   price: number;
@@ -8,6 +10,8 @@ export interface CartItem {
   category: string;
   quantity: number;
   stock: number;
+  selectedVariants: SelectedVariants;
+  variantLabel: string | null;
 }
 
 export interface CheckoutDetails {
@@ -50,8 +54,8 @@ export interface CartContextValue {
   openCart: () => void;
   closeCart: () => void;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (lineId: string) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
   applyPromo: (code: string) => { ok: true } | { ok: false; error: string };
   removePromo: () => void;

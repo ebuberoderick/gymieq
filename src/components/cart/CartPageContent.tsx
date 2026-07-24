@@ -42,7 +42,7 @@ export function CartPageContent() {
           <FadeIn className="lg:col-span-2">
             <GlassCard variant="strong" className="divide-y divide-white/5 px-5">
               {items.map((item) => (
-                <CartItemRow key={item.productId} item={item} />
+                <CartItemRow key={item.lineId} item={item} />
               ))}
             </GlassCard>
             <button

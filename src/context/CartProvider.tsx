@@ -26,9 +26,17 @@ function clampQuantity(quantity: number, stock: number): number {
 }
 
 function withStock(item: CartItem): CartItem {
-  const stock = item.stock > 0 ? item.stock : getProductStock(item.productId);
+  const selected = item.selectedVariants ?? {};
+  const stock =
+    item.stock > 0
+      ? item.stock
+      : getProductStock(item.productId, selected);
+  const lineId = item.lineId || item.productId;
   return {
     ...item,
+    lineId,
+    selectedVariants: selected,
+    variantLabel: item.variantLabel ?? null,
     stock,
     quantity: clampQuantity(item.quantity, stock),
   };
@@ -79,20 +87,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addItem = useCallback(
     (item: Omit<CartItem, "quantity">, quantity = 1) => {
       const stock =
-        item.stock > 0 ? item.stock : getProductStock(item.productId);
+        item.stock > 0
+          ? item.stock
+          : getProductStock(item.productId, item.selectedVariants);
       if (stock < 1) return;
 
       setItems((prev) => {
-        const existing = prev.find((i) => i.productId === item.productId);
+        const existing = prev.find((i) => i.lineId === item.lineId);
         if (existing) {
           const nextQty = clampQuantity(existing.quantity + quantity, stock);
           if (nextQty < 1) {
-            return prev.filter((i) => i.productId !== item.productId);
+            return prev.filter((i) => i.lineId !== item.lineId);
           }
           return prev.map((i) =>
-            i.productId === item.productId
-              ? { ...i, stock, quantity: nextQty }
-              : i,
+            i.lineId === item.lineId ? { ...i, stock, quantity: nextQty } : i,
           );
         }
 
@@ -104,25 +112,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.productId !== productId));
+  const removeItem = useCallback((lineId: string) => {
+    setItems((prev) => prev.filter((i) => i.lineId !== lineId));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((lineId: string, quantity: number) => {
     setItems((prev) => {
-      const current = prev.find((i) => i.productId === productId);
+      const current = prev.find((i) => i.lineId === lineId);
       if (!current) return prev;
 
       const stock =
-        current.stock > 0 ? current.stock : getProductStock(productId);
+        current.stock > 0
+          ? current.stock
+          : getProductStock(current.productId, current.selectedVariants);
       const nextQty = clampQuantity(quantity, stock);
 
       if (nextQty < 1) {
-        return prev.filter((i) => i.productId !== productId);
+        return prev.filter((i) => i.lineId !== lineId);
       }
 
       return prev.map((i) =>
-        i.productId === productId ? { ...i, stock, quantity: nextQty } : i,
+        i.lineId === lineId ? { ...i, stock, quantity: nextQty } : i,
       );
     });
   }, []);

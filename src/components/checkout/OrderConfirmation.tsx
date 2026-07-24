@@ -60,11 +60,13 @@ export function OrderConfirmation() {
             <div className="mt-8 space-y-3 border-t border-white/10 pt-6">
               {order.items.map((item) => (
                 <div
-                  key={item.productId}
+                  key={item.lineId}
                   className="flex items-center justify-between gap-3 text-sm"
                 >
                   <span className="text-white">
-                    {item.name} × {item.quantity}
+                    {item.name}
+                    {item.variantLabel ? ` (${item.variantLabel})` : ""} ×{" "}
+                    {item.quantity}
                   </span>
                   <span className="text-white/60">
                     {formatMoney(item.price * item.quantity)}

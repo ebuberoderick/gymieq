@@ -16,7 +16,9 @@ interface CartItemRowProps {
 export function CartItemRow({ item, compact = false }: CartItemRowProps) {
   const { updateQuantity, removeItem } = useCart();
   const maxStock =
-    item.stock > 0 ? item.stock : getProductStock(item.productId);
+    item.stock > 0
+      ? item.stock
+      : getProductStock(item.productId, item.selectedVariants);
 
   return (
     <div className={`flex gap-3 ${compact ? "py-3" : "gap-4 py-4"}`}>
@@ -35,6 +37,7 @@ export function CartItemRow({ item, compact = false }: CartItemRowProps) {
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">{item.name}</p>
             <p className="text-xs text-white/40">
+              {item.variantLabel ? `${item.variantLabel} · ` : ""}
               {item.category}
               {item.quantity >= maxStock ? " · max stock" : ""}
             </p>
@@ -49,14 +52,14 @@ export function CartItemRow({ item, compact = false }: CartItemRowProps) {
             quantity={item.quantity}
             max={maxStock}
             size="sm"
-            onDecrease={() => updateQuantity(item.productId, item.quantity - 1)}
-            onIncrease={() => updateQuantity(item.productId, item.quantity + 1)}
+            onDecrease={() => updateQuantity(item.lineId, item.quantity - 1)}
+            onIncrease={() => updateQuantity(item.lineId, item.quantity + 1)}
           />
 
           <button
             type="button"
             aria-label={`Remove ${item.name}`}
-            onClick={() => removeItem(item.productId)}
+            onClick={() => removeItem(item.lineId)}
             className="rounded-lg p-2 text-white/40 transition-colors hover:text-brand-red"
           >
             <Trash2 className="h-4 w-4" />

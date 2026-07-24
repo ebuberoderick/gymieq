@@ -1,11 +1,21 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
-import type { Product } from "@/lib/constants/products";
+import type { Product, SelectedVariants, VariantKind } from "@/lib/constants/products";
+import {
+  areVariantsComplete,
+  buildCartLineId,
+  formatVariantLabel,
+  getAvailableStock,
+  getUnitPrice,
+  hasVariants,
+} from "@/lib/constants/products";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { QuantityStepper } from "@/components/cart/QuantityStepper";
+import { ProductVariantPicker } from "@/components/shop/ProductVariantPicker";
 import { useCart } from "@/hooks/useCart";
 import { formatMoney } from "@/lib/cart/totals";
 
@@ -15,21 +25,45 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { items, addItem, updateQuantity } = useCart();
-  const cartItem = items.find((item) => item.productId === product.id);
+  const [selected, setSelected] = useState<SelectedVariants>({});
+  const [error, setError] = useState("");
+
+  const variantsEnabled = hasVariants(product);
+  const complete = areVariantsComplete(product, selected);
+  const lineId = buildCartLineId(product.id, selected);
+  const cartItem = complete
+    ? items.find((item) => item.lineId === lineId)
+    : undefined;
   const quantity = cartItem?.quantity ?? 0;
-  const inCart = quantity > 0;
-  const outOfStock = product.stock < 1;
-  const atMax = quantity >= product.stock;
+  const stock = getAvailableStock(product, selected);
+  const price = getUnitPrice(product, selected);
+  const outOfStock = variantsEnabled
+    ? complete && stock < 1
+    : product.stock < 1;
+  const atMax = quantity > 0 && quantity >= stock;
+
+  const handleSelect = (kind: VariantKind, value: string) => {
+    setError("");
+    setSelected((prev) => ({ ...prev, [kind]: value }));
+  };
 
   const handleAdd = () => {
-    if (outOfStock || atMax) return;
+    if (variantsEnabled && !complete) {
+      setError("Select all options before adding.");
+      return;
+    }
+    if (stock < 1 || atMax) return;
+
     addItem({
+      lineId,
       productId: product.id,
       name: product.name,
-      price: product.price,
+      price,
       image: product.image,
       category: product.category,
-      stock: product.stock,
+      stock,
+      selectedVariants: selected,
+      variantLabel: formatVariantLabel(selected),
     });
   };
 
@@ -61,35 +95,43 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.category}
         </span>
         <h3 className="mt-1 font-semibold text-white">{product.name}</h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-white/50">
+        <p className="mt-2 text-sm leading-relaxed text-white/50">
           {product.description}
         </p>
-        {!outOfStock && (
+
+        <ProductVariantPicker
+          product={product}
+          selected={selected}
+          onChange={handleSelect}
+        />
+
+        {(!variantsEnabled || complete) && !outOfStock && (
           <p className="mt-2 text-xs text-white/35">
-            {product.stock} in stock
+            {stock} in stock
             {atMax ? " · max in bag" : ""}
           </p>
         )}
+        {error && <p className="mt-2 text-xs text-brand-red">{error}</p>}
 
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
           <span className="text-xl font-bold text-white">
-            {formatMoney(product.price)}
+            {formatMoney(price)}
           </span>
 
-          {inCart ? (
+          {quantity > 0 && cartItem ? (
             <QuantityStepper
               quantity={quantity}
-              max={product.stock}
+              max={stock}
               size="sm"
-              onDecrease={() => updateQuantity(product.id, quantity - 1)}
-              onIncrease={() => updateQuantity(product.id, quantity + 1)}
+              onDecrease={() => updateQuantity(cartItem.lineId, quantity - 1)}
+              onIncrease={() => updateQuantity(cartItem.lineId, quantity + 1)}
             />
           ) : (
             <Button
               className="!rounded-xl !px-4 !py-2 text-xs"
               variant="glass"
               onClick={handleAdd}
-              disabled={outOfStock}
+              disabled={outOfStock || (variantsEnabled && complete && stock < 1)}
             >
               <ShoppingCart className="h-3.5 w-3.5" />
               {outOfStock ? "Unavailable" : "Add to Cart"}

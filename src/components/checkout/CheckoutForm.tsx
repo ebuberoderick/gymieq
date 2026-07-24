@@ -127,11 +127,13 @@ export function CheckoutForm() {
           <ul className="space-y-3 border-b border-white/10 pb-4">
             {items.map((item) => (
               <li
-                key={item.productId}
+                key={item.lineId}
                 className="flex justify-between gap-3 text-sm text-white/60"
               >
                 <span className="truncate text-white">
-                  {item.name} × {item.quantity}
+                  {item.name}
+                  {item.variantLabel ? ` (${item.variantLabel})` : ""} ×{" "}
+                  {item.quantity}
                 </span>
                 <span>{formatMoney(item.price * item.quantity)}</span>
               </li>
